@@ -46,14 +46,9 @@ export function GrievancePage() {
           ? (recentTickets.find((t) => t.id === selectedTripId)?.trip_id ?? null)
           : null;
 
-      // Call the existing file_complaint RPC (migration 024)
-      // The RPC requires a trip_id; if no ticket selected we pass the most recent trip or null
-      const resolvedTripId =
-        tripId ?? (recentTickets[0]?.trip_id ?? null);
-
-      if (!resolvedTripId) {
-        throw new Error("Please link a trip to your complaint — or travel first and then file.");
-      }
+      // The RPC accepts a null trip_id for general complaints (complaints.trip_id is nullable).
+      // Linking a ticket is optional context, not a requirement.
+      const resolvedTripId = tripId ?? (recentTickets[0]?.trip_id ?? null);
 
       const fullDescription = [
         description.trim(),

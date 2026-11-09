@@ -36,5 +36,5 @@ export default defineConfig({
       devOptions: { enabled: false },
     }),
   ],
-  server: { host: true, port: 5174 },
+  server: { host: true, port: 5174, allowedHosts: true },
 });

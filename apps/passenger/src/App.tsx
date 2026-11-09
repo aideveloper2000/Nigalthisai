@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { usePassengerSession } from "./hooks/usePassengerSession";
-import { LoadingState, ErrorState, OfflineBanner, BottomNav } from "@sbt/ui";
+import { LoadingState, OfflineBanner, BottomNav } from "@sbt/ui";
 import { useI18n } from "./lib/i18n";
 import { HomePage } from "./pages/HomePage";
 import { SearchResultsPage } from "./pages/SearchResultsPage";
@@ -112,14 +112,6 @@ export function App() {
   const { isReady, error } = usePassengerSession();
   const { lang, t } = useI18n();
 
-  if (error) {
-    return (
-      <div key={lang} className="flex min-h-dvh items-center justify-center p-6">
-        <ErrorState title={t("connecting")} description={error} onRetry={() => window.location.reload()} />
-      </div>
-    );
-  }
-
   if (!isReady) {
     return (
       <div key={lang} className="flex min-h-dvh items-center justify-center">
@@ -131,6 +123,16 @@ export function App() {
   return (
     <div key={lang} className="min-h-dvh bg-canvas-light dark:bg-canvas-dark">
       <OfflineBanner message={t("offline")} />
+      {error && (
+        <div role="alert" className="mx-3 mt-3 flex items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-200">
+          <span>
+            <strong>Could not connect to the server.</strong> Showing the app in offline mode — live buses and ticketing need a working Supabase backend. ({error})
+          </span>
+          <button type="button" onClick={() => window.location.reload()} className="shrink-0 rounded-lg border border-current px-3 py-1 font-bold uppercase">
+            Retry
+          </button>
+        </div>
+      )}
       <AppRoutes />
     </div>
   );
